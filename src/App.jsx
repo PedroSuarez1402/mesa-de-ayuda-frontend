@@ -4,12 +4,13 @@ import {HashRouter, Route, Routes} from 'react-router-dom'
 
 import './scss/style.scss'
 import PrivateRoute from './components/PrivateRoute'
+import DefaultLayout from './layout/DefaultLayout'
 
 
 const Login = React.lazy(() => import('./views/pages/login/Login'))
 const Register = React.lazy(() => import('./views/pages/register/Register'))
 
-function App() {
+const App = () => {
   
   return (
     <HashRouter>
@@ -20,8 +21,7 @@ function App() {
           <Route path="*" name="home" element={
             <PrivateRoute>
               <DefaultLayout/>
-            </PrivateRoute>
-          }
+            </PrivateRoute>}
           />
         </Routes>
       </Suspense>
