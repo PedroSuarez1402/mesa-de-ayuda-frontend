@@ -1,6 +1,6 @@
 # Mesa de ayuda front
 
----Instalacion
+### Instalacion
 Para poder utilizar el proyecto de manera local puedes iniciar clonando el repositorio
 
 ~~~
