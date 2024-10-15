@@ -4,9 +4,10 @@ import {HashRouter, Route, Routes} from 'react-router-dom'
 
 import './scss/style.scss'
 import PrivateRoute from './components/PrivateRoute'
-import DefaultLayout from './layout/DefaultLayout'
 
-
+//contenedors
+const DefaultLayout = React.lazy(()=>import('./layout/DefaultLayout'))
+//paginas
 const Login = React.lazy(() => import('./views/pages/login/Login'))
 const Register = React.lazy(() => import('./views/pages/register/Register'))
 
