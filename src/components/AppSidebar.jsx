@@ -14,31 +14,16 @@ import { AppSidebarNav } from './AppSidebarNav'
 
 // Importar la función que genera los ítems de navegación
 import generateNav from '../_nav'
-import clienteAxios from '../config/axios'
+
 
 const AppSidebar = () => {
   const dispatch = useDispatch()
   const unfoldable = useSelector((state) => state.sidebarUnfoldable)
   const sidebarShow = useSelector((state) => state.sidebarShow)
 
-  const [role, setRole] = useState(null)
 
-  // Cargar el rol del usuario dinámicamente desde localStorage
   useEffect(() => {
-    const fetchUserRole = async () => {
-      try {
-        const token = localStorage.getItem('token')
-        if (token) {
-          const response = await clienteAxios.get('/auth/me', {
-            headers: { Authorization: `Bearer ${token}` },
-          })
-          setRole(response.data.role)
-        }
-      } catch (error) {
-        console.error('Error en el fetching user Role:', error)
-      }
-    }
-    fetchUserRole()
+    
   }, [])
 
   return (
@@ -64,7 +49,7 @@ const AppSidebar = () => {
         />
       </CSidebarHeader>
       {/* Pasar el rol del usuario como prop a generateNav */}
-      <AppSidebarNav items={generateNav(role)} />
+      <AppSidebarNav items={generateNav()} />
       <CSidebarFooter className="border-top d-none d-lg-flex">
         <CSidebarToggler
           onClick={() => dispatch({ type: 'set', sidebarUnfoldable: !unfoldable })}

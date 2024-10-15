@@ -5,9 +5,24 @@ import { CButton, CCard, CCardBody, CCardGroup, CCol, CContainer, CForm, CFormIn
 import CIcon from '@coreui/icons-react';
 import { cilLockLocked, cilUser } from '@coreui/icons';
 import imagenLogin from '/xampp/htdocs/Desarrollos/mesa-de-ayuda/mesa-de-ayuda-frontend/src/assets/images/imagenLogin3.jpg';
+import clienteAxios from "../../../config/axios";
 
 const Login = () => {
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
     const navigate = useNavigate();
+
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await clienteAxios.post('/login', {username, password})
+            localStorage.setItem('token', response.data.token)
+            navigate('/dashboard');
+        } catch (error) {
+            console.error("Error de inicio de sesion:", error)
+
+        }
+    }
 
     const handleRegisterClick = () => {
         navigate('/register');
@@ -23,7 +38,7 @@ const Login = () => {
                         <CCardGroup>
                             <CCard className="p-1">
                                 <CCardBody>
-                                    <CForm className="p-5">
+                                    <CForm className="p-5" onSubmit={handleLogin}>
                                         <h1>Inicia Sesión</h1>
                                         <p className="text-body-secondary">Ingresa tu cuenta</p>
                                         <CInputGroup className="mb-3">
@@ -34,6 +49,8 @@ const Login = () => {
                                                 placeholder="Username"
                                                 autoComplete="username"
                                                 type="text"
+                                                value={username}
+                                                onChange={(e) => setUsername(e.target.value)}
                                             />
                                         </CInputGroup>
                                         <CInputGroup className="mb-4">
@@ -44,6 +61,8 @@ const Login = () => {
                                                 type="password"
                                                 placeholder="Password"
                                                 autoComplete="current-password"
+                                                value={password}
+                                                onChange={(e) => setPassword(e.target.value)}
                                             />
                                         </CInputGroup>
                                         <CRow>
