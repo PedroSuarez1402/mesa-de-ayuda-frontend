@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { CButton, CCard, CCardBody, CCardGroup, CCol, CContainer, CForm, CFormInput, CInputGroup, CInputGroupText, CRow } from '@coreui/react';
 import CIcon from '@coreui/icons-react';
 import { cilLockLocked, cilUser } from '@coreui/icons';
-import imagenLogin from '/laragon/www/mesa-de-ayuda/mesa-de-ayuda-frontend/src/assets/images/imagenLogin3.jpg';
+import imagenLogin from '/xampp/htdocs/Desarrollos/mesa-de-ayuda/mesa-de-ayuda-frontend/src/assets/images/imagenLogin3.jpg';
 
 const Login = () => {
     const navigate = useNavigate();
