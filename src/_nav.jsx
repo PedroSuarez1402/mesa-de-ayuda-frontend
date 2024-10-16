@@ -2,7 +2,7 @@
 
 import React from 'react'
 import CIcon from '@coreui/icons-react'
-import { cilApplications, cilBell, cilSpeedometer, cilUser, cilHome } from '@coreui/icons'
+import { cilApplications, cilBell, cilSpeedometer, cilUser, cilHome, cilClipboard } from '@coreui/icons'
 import { CNavItem, CNavTitle } from '@coreui/react'
 
 const generateNav = () => {
@@ -15,7 +15,14 @@ const generateNav = () => {
             badge: {
                 color: 'info',
             },
+            
         },
+        {
+            component: CNavItem,
+            name: 'Request',
+            to: '/request',
+            icon: <CIcon icon={cilClipboard} customClassName="nav-icon" />
+        }
 
     ]
 

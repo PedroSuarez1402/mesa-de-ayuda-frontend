@@ -6,10 +6,12 @@ import PrivateRoute from "./components/PrivateRoute";
 import { Navigate } from "react-router-dom";
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
+const Request = React.lazy(() => import('./views/request/Request'))
 
 const routes = [
     { path: '/', exact: true, name: 'Home', element:()=><Navigate to="/login" replace />},
-    { path: '/dashboard', name: 'Dashboard', element:()=>(<PrivateRoute><Dashboard/></PrivateRoute>)}
+    { path: '/dashboard', name: 'Dashboard', element:()=>(<PrivateRoute><Dashboard/></PrivateRoute>)},
+    { path: '/request', name: 'Request', element: () => (<PrivateRoute><Request/></PrivateRoute>) }
 ]
 
 export default routes
