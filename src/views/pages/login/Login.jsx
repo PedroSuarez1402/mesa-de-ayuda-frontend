@@ -6,6 +6,7 @@ import CIcon from '@coreui/icons-react';
 import { cilLockLocked, cilUser } from '@coreui/icons';
 import imagenLogin from '/xampp/htdocs/Desarrollos/mesa-de-ayuda/mesa-de-ayuda-frontend/src/assets/images/imagenLogin3.jpg';
 import clienteAxios from "../../../config/axios";
+import Swal from "sweetalert2";
 
 const Login = () => {
     const [username, setUsername] = useState("");
@@ -14,19 +15,56 @@ const Login = () => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        try {
-            const response = await clienteAxios.post('/login', {username, password})
-            localStorage.setItem('token', response.data.token)
-            navigate('/dashboard');
-        } catch (error) {
-            console.error("Error de inicio de sesion:", error)
 
+        // Validación de campos vacíos
+        if (username.trim() === "") {
+            return Swal.fire({
+                icon: "warning",
+                title: "Usuario vacío",
+                text: "El username no puede estar vacío",
+            });
         }
-    }
+        
+        if (password.trim() === "") {
+            return Swal.fire({
+                icon: "warning",
+                title: "Contraseña vacía",
+                text: "La contraseña no puede estar vacía",
+            });
+        }
+
+        try {
+            const response = await clienteAxios.post('/login', { username, password });
+
+            // Verificar si el login fue exitoso y se recibió un token
+            if (response.data.token) {
+                localStorage.setItem('token', response.data.token);
+                Swal.fire({
+                    icon: "success",
+                    title: "Inicio de sesión exitoso",
+                    text: "Bienvenido",
+                });
+                navigate('/dashboard');
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error de autenticación",
+                    text: response.data.message || "Usuario o contraseña incorrectos",
+                });
+            }
+        } catch (error) {
+            Swal.fire({
+                icon: "error",
+                title: "Error de inicio de sesión",
+                text: "Verifica tus credenciales e intenta nuevamente.",
+            });
+            console.error("Error de inicio de sesión:", error);
+        }
+    };
 
     const handleRegisterClick = () => {
         navigate('/register');
-    }
+    };
     return (
         <div 
             className="min-vh-100 d-flex flex-row align-items-center"

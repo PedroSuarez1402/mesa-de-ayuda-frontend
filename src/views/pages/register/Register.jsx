@@ -6,6 +6,7 @@ import CIcon from '@coreui/icons-react';
 import { cilLockLocked, cilPhone, cilUser } from '@coreui/icons';
 import imagenLogin from '/xampp/htdocs/Desarrollos/mesa-de-ayuda/mesa-de-ayuda-frontend/src/assets/images/imagenLogin2.jpg';
 import clienteAxios from "../../../config/axios";
+import Swal from 'sweetalert2';
 
 const Register = () => {
     const navigate = useNavigate();
@@ -27,19 +28,48 @@ const Register = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        //validacion de contraseña
+        if(formData.password.length < 8){
+            return Swal.fire({
+                icon: 'warning',
+                title: 'Contraseña debil',
+                text: 'La contraseña debe tener al menos 8 caracteres.'
+            })
+        }
+        if (formData.password !== formData.password_confirmation){
+            return Swal.fire({
+                icon: 'error',
+                title: 'Contraseñas no coinciden',
+                text: 'Por favor, asegurate de que ambas contraseñas coincidan'
+            })
+        }
         try {
             const response = await clienteAxios.post('/register', formData);
-            if(response.data.status === 200){
-                navigate('/');
-            }else{
-                setError(response.data.message)
+            if (response.data.status === 200) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Registro exitoso',
+                    text: 'Usuario registrado exitosamente'
+                }).then(()=>
+                navigate('/'));
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error en registro',
+                    text: response.data.message,
+                });
             }
         } catch (error) {
-            setError('Error al registrarse. Intentalo de nuevo')
+            Swal.fire({
+                icon: 'error',
+                title: 'Error al registrarse',
+                text: 'Ocurrió un error. Intenta de nuevo.',
+            });
         }
     }
     return (
-        <div 
+        <div
             className="min-vh-100 d-flex flex-row align-items-center"
             style={{ backgroundColor: '#c7c8cb' }} // Fondo gris oscuro
         >
@@ -121,7 +151,7 @@ const Register = () => {
                                                 </CButton>
                                             </CCol>
                                             <CCol xs={6} className="text-right">
-                                                <CButton color="link" className="px-0" onClick={()=>navigate('/')} >
+                                                <CButton color="link" className="px-0" onClick={() => navigate('/')} >
                                                     ¿Ya tienes cuenta? Inicia sesion!
                                                 </CButton>
                                             </CCol>
