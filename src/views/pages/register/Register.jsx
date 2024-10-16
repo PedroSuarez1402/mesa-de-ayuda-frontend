@@ -29,15 +29,24 @@ const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        // Verificar campos vacíos
+        const { username, password, password_confirmation, name, phone } = formData;
+        if (!username || !password || !password_confirmation || !name || !phone) {
+            return Swal.fire({
+                icon: "warning",
+                title: "Campos vacíos",
+                text: "Todos los campos son obligatorios.",
+            });
+        }
         //validacion de contraseña
-        if(formData.password.length < 8){
+        if (formData.password.length < 8) {
             return Swal.fire({
                 icon: 'warning',
                 title: 'Contraseña debil',
                 text: 'La contraseña debe tener al menos 8 caracteres.'
             })
         }
-        if (formData.password !== formData.password_confirmation){
+        if (formData.password !== formData.password_confirmation) {
             return Swal.fire({
                 icon: 'error',
                 title: 'Contraseñas no coinciden',
@@ -51,8 +60,8 @@ const Register = () => {
                     icon: 'success',
                     title: 'Registro exitoso',
                     text: 'Usuario registrado exitosamente'
-                }).then(()=>
-                navigate('/'));
+                }).then(() =>
+                    navigate('/'));
             } else {
                 Swal.fire({
                     icon: 'error',
