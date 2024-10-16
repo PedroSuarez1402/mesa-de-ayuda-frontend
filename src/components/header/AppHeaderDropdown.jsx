@@ -1,25 +1,30 @@
-/* eslint-disable prettier/prettier */
+/* eslint-disable no-unused-vars */
 import React from 'react'
-import { CAvatar, CBadge, CDropdown, CDropdownDivider, CDropdownHeader, CDropdownItem, CDropdownMenu, CDropdownToggle,
-} from '@coreui/react'
-import { cilBell, cilCreditCard, cilCommentSquare, cilEnvelopeOpen, cilFile, cilLockLocked, cilSettings, cilTask, cilUser,
-} from '@coreui/icons'
+import { CAvatar, CDropdown, CDropdownDivider, CDropdownHeader, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
+import { cilLockLocked, cilSettings, cilUser } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 import { useNavigate } from 'react-router-dom'
+import clienteAxios from '../../config/axios'
 
 
 const AppHeaderDropdown = () => {
   const navigate = useNavigate()
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    navigate('login')
+  const handleLogout = async () => {
+    try {
+      await clienteAxios.post('/logout');
+      localStorage.removeItem('token');
+      navigate('/');
+    } catch (error) {
+      console.error("Error durante el cierre de sesión", error);
+    }
   }
   return (
     <CDropdown variant="nav-item">
       <CDropdownToggle placement="bottom-end" className="py-0 pe-0" caret={false}>
-        <CAvatar  size="md" />
+        <CAvatar color="" size="md" className="me-2">
+          <CIcon icon={cilUser} size="xl" />
+        </CAvatar>
       </CDropdownToggle>
       <CDropdownMenu className="pt-0" placement="bottom-end">
         <CDropdownHeader className="bg-body-secondary fw-semibold my-2">Settings</CDropdownHeader>
