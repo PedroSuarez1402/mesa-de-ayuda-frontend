@@ -58,9 +58,12 @@ const Register = () => {
                                                 <CIcon icon={cilUser} />
                                             </CInputGroupText>
                                             <CFormInput
+                                                name="username"
                                                 placeholder="Username"
                                                 autoComplete="username"
                                                 type="text"
+                                                value={formData.username}
+                                                onChange={handleChange}
                                             />
                                         </CInputGroup>
                                         <CInputGroup className="mb-3">
@@ -68,9 +71,11 @@ const Register = () => {
                                                 <CIcon icon={cilUser} />
                                             </CInputGroupText>
                                             <CFormInput
+                                                name="name"
                                                 placeholder="Nombre completo"
-                                                autoComplete="nombre"
                                                 type="text"
+                                                value={formData.name}
+                                                onChange={handleChange}
                                             />
                                         </CInputGroup>
                                         <CInputGroup className="mb-3">
@@ -78,9 +83,11 @@ const Register = () => {
                                                 <CIcon icon={cilPhone} />
                                             </CInputGroupText>
                                             <CFormInput
+                                                name="phone"
                                                 placeholder="Telefono"
-                                                autoComplete="telefono"
                                                 type="text"
+                                                value={formData.phone}
+                                                onChange={handleChange}
                                             />
                                         </CInputGroup>
                                         <CInputGroup className="mb-4">
@@ -88,9 +95,11 @@ const Register = () => {
                                                 <CIcon icon={cilLockLocked} />
                                             </CInputGroupText>
                                             <CFormInput
+                                                name="password"
                                                 type="password"
                                                 placeholder="Password"
-                                                autoComplete="current-password"
+                                                value={formData.password}
+                                                onChange={handleChange}
                                             />
                                         </CInputGroup>
                                         <CInputGroup className="mb-4">
@@ -98,9 +107,11 @@ const Register = () => {
                                                 <CIcon icon={cilLockLocked} />
                                             </CInputGroupText>
                                             <CFormInput
+                                                name="password_confirmation"
                                                 type="password"
                                                 placeholder="Repetir Password"
-                                                autoComplete="current-password"
+                                                value={formData.password_confirmation}
+                                                onChange={handleChange}
                                             />
                                         </CInputGroup>
                                         <CRow>
@@ -110,7 +121,7 @@ const Register = () => {
                                                 </CButton>
                                             </CCol>
                                             <CCol xs={6} className="text-right">
-                                                <CButton color="link" className="px-0" onClick={handleChange} >
+                                                <CButton color="link" className="px-0" onClick={()=>navigate('/')} >
                                                     ¿Ya tienes cuenta? Inicia sesion!
                                                 </CButton>
                                             </CCol>
