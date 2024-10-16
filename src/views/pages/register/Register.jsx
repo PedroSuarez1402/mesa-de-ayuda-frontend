@@ -5,12 +5,38 @@ import { CButton, CCard, CCardBody, CCardGroup, CCol, CContainer, CForm, CFormIn
 import CIcon from '@coreui/icons-react';
 import { cilLockLocked, cilPhone, cilUser } from '@coreui/icons';
 import imagenLogin from '/xampp/htdocs/Desarrollos/mesa-de-ayuda/mesa-de-ayuda-frontend/src/assets/images/imagenLogin2.jpg';
+import clienteAxios from "../../../config/axios";
 
 const Register = () => {
     const navigate = useNavigate();
+    const [formData, setFormData] = useState({
+        username: '',
+        password: '',
+        password_confirmation: '',
+        name: '',
+        phone: '',
+    })
+    const [error, setError] = useState('');
 
-    const handleRegisterClick = () => {
-        navigate('/');
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value,
+        })
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await clienteAxios.post('/register', formData);
+            if(response.data.status === 200){
+                navigate('/');
+            }else{
+                setError(response.data.message)
+            }
+        } catch (error) {
+            setError('Error al registrarse. Intentalo de nuevo')
+        }
     }
     return (
         <div 
@@ -23,9 +49,10 @@ const Register = () => {
                         <CCardGroup>
                             <CCard className="p-1">
                                 <CCardBody>
-                                    <CForm className="p-5">
+                                    <CForm className="p-5" onSubmit={handleSubmit}>
                                         <h1>Registrar</h1>
                                         <p className="text-body-secondary">Ingresa tu cuenta</p>
+                                        {error && <p className="text-danger">{error}</p>}
                                         <CInputGroup className="mb-3">
                                             <CInputGroupText>
                                                 <CIcon icon={cilUser} />
@@ -33,6 +60,16 @@ const Register = () => {
                                             <CFormInput
                                                 placeholder="Username"
                                                 autoComplete="username"
+                                                type="text"
+                                            />
+                                        </CInputGroup>
+                                        <CInputGroup className="mb-3">
+                                            <CInputGroupText>
+                                                <CIcon icon={cilUser} />
+                                            </CInputGroupText>
+                                            <CFormInput
+                                                placeholder="Nombre completo"
+                                                autoComplete="nombre"
                                                 type="text"
                                             />
                                         </CInputGroup>
@@ -73,7 +110,7 @@ const Register = () => {
                                                 </CButton>
                                             </CCol>
                                             <CCol xs={6} className="text-right">
-                                                <CButton color="link" className="px-0" onClick={handleRegisterClick} >
+                                                <CButton color="link" className="px-0" onClick={handleChange} >
                                                     ¿Ya tienes cuenta? Inicia sesion!
                                                 </CButton>
                                             </CCol>
