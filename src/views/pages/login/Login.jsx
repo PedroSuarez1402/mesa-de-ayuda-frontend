@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CButton, CCard, CCardBody, CCardGroup, CCol, CContainer, CForm, CFormInput, CInputGroup, CInputGroupText, CRow } from '@coreui/react';
+import { CButton, CCard, CCardBody, CCardGroup, CCol, CContainer, CForm, CFormInput, CInputGroup, CInputGroupText, CRow, CSpinner } from '@coreui/react';
 import CIcon from '@coreui/icons-react';
 import { cilLockLocked, cilUser } from '@coreui/icons';
 import imagenLogin from '/images/imagenLogin3.jpg';
@@ -11,10 +11,12 @@ import Swal from "sweetalert2";
 const Login = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        setLoading(true);
 
         // Validación de campos vacíos
         if (username.trim() === "") {
@@ -59,6 +61,8 @@ const Login = () => {
                 text: "Verifica tus credenciales e intenta nuevamente.",
             });
             console.error("Error de inicio de sesión:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -105,12 +109,18 @@ const Login = () => {
                                         </CInputGroup>
                                         <CRow>
                                             <CCol xs={6}>
-                                                <CButton type="submit" color="primary" className="px-4">
+                                                <CButton type="submit" color="primary" className="px-4" disabled={loading} >
+                                                {loading ? (
+                                                    <CSpinner size="sm" className="me-2"/>
+                                                ):(
+                                                    <CIcon icon={cilLockLocked} className="me-2"/>
+                                                )}
                                                     Iniciar Sesión
                                                 </CButton>
                                             </CCol>
                                             <CCol xs={6} className="text-right">
-                                                <CButton color="link" className="px-0" onClick={handleRegisterClick} >
+                                                <CButton color="link" className="px-0" onClick={handleRegisterClick}>
+                                                
                                                     ¿No tienes cuenta? ¡Regístrate!
                                                 </CButton>
                                             </CCol>
