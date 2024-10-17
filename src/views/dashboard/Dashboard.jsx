@@ -7,7 +7,7 @@ const Dashboard = () => {
     <>
       <CRow>
         <CCol xs>
-
+          <p>Aqui ese encontraran los datos dependiendo del usuario</p>
         </CCol>
       </CRow>
     </>

@@ -5,13 +5,17 @@ import clienteAxios from '../../config/axios';
 
 const Request = () => {
     const [requests, setRequests] = useState([]);
-    
+
     const navigate = useNavigate();
 
-    
-  return (
-    <div>Request</div>
-  )
+
+    return (
+        <div>
+            Request
+            <p>Aqui se encuentran las solicitudes</p>
+        </div>
+
+    )
 }
 
 export default Request

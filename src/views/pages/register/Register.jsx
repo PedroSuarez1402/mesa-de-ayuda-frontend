@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { CButton, CCard, CCardBody, CCardGroup, CCol, CContainer, CForm, CFormInput, CInputGroup, CInputGroupText, CRow } from '@coreui/react';
 import CIcon from '@coreui/icons-react';
 import { cilLockLocked, cilPhone, cilUser } from '@coreui/icons';
-import imagenLogin from '/xampp/htdocs/Desarrollos/mesa-de-ayuda/mesa-de-ayuda-frontend/src/assets/images/imagenLogin2.jpg';
+import imagenLogin from '/images/imagenLogin2.jpg';
 import clienteAxios from "../../../config/axios";
 import Swal from 'sweetalert2';
 
