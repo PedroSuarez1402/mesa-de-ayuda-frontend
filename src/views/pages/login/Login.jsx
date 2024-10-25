@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CButton, CCard, CCardBody, CCardGroup, CCol, CContainer, CForm, CFormInput, CInputGroup, CInputGroupText, CRow, CSpinner } from '@coreui/react';
 import CIcon from '@coreui/icons-react';
@@ -7,8 +7,10 @@ import { cilLockLocked, cilUser } from '@coreui/icons';
 import imagenLogin from '/images/imagenLogin3.jpg';
 import clienteAxios from "../../../config/axios";
 import Swal from "sweetalert2";
+import { AuthContext } from "../../../context/AuthContext";
 
 const Login = () => {
+    const {login} = useContext(AuthContext);
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
@@ -40,6 +42,12 @@ const Login = () => {
 
             // Verificar si el login fue exitoso y se recibió un token
             if (response.data.token) {
+                const userData = {
+                    userId: response.data.user.id,
+                    rolId: response.data.user.rol,
+                    username: response.data.user.username,
+                };
+                login(userData);
                 localStorage.setItem('token', response.data.token);
                 Swal.fire({
                     icon: "success",

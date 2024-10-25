@@ -18,7 +18,6 @@ const AppContent = () => {
                   path={route.path}
                   exact={route.exact}
                   name={route.name}
-                  // eslint-disable-next-line prettier/prettier
                   element={ typeof route.element === 'function' ? route.element() : <route.element /> }
                 />
               )
