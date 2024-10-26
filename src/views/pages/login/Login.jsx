@@ -10,77 +10,56 @@ import Swal from "sweetalert2";
 import { AuthContext } from "../../../context/AuthContext";
 
 const Login = () => {
-    const {login} = useContext(AuthContext);
+    const { login } = useContext(AuthContext);
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
+    const showAlert = (icon, title, text) => {
+        Swal.fire({ icon, title, text });
+    };
+
+    const validateFields = () => {
+        if (!username.trim()) {
+            showAlert("warning", "Usuario vacío", "El username no puede estar vacío");
+            return false;
+        }
+        if (!password.trim()) {
+            showAlert("warning", "Contraseña vacía", "La contraseña no puede estar vacía");
+            return false;
+        }
+        return true;
+    };
+
     const handleLogin = async (e) => {
         e.preventDefault();
+        if (!validateFields()) return;
+
         setLoading(true);
-
-        // Validación de campos vacíos
-        if (username.trim() === "") {
-            return Swal.fire({
-                icon: "warning",
-                title: "Usuario vacío",
-                text: "El username no puede estar vacío",
-            });
-        }
-        
-        if (password.trim() === "") {
-            return Swal.fire({
-                icon: "warning",
-                title: "Contraseña vacía",
-                text: "La contraseña no puede estar vacía",
-            });
-        }
-
         try {
-            const response = await clienteAxios.post('/login', { username, password });
-
-            // Verificar si el login fue exitoso y se recibió un token
-            if (response.data.token) {
-                const userData = {
-                    userId: response.data.user.id,
-                    rolId: response.data.user.rol,
-                    username: response.data.user.username,
-                };
+            const { data } = await clienteAxios.post('/login', { username, password });
+            if (data.token) {
+                const userData = { userId: data.user.id, rolId: data.user.rol, username: data.user.username };
                 login(userData);
-                localStorage.setItem('token', response.data.token);
-                Swal.fire({
-                    icon: "success",
-                    title: "Inicio de sesión exitoso",
-                    text: "Bienvenido",
-                });
+                localStorage.setItem('token', data.token);
+                showAlert("success", "Inicio de sesión exitoso", "Bienvenido");
                 navigate('/dashboard');
             } else {
-                Swal.fire({
-                    icon: "error",
-                    title: "Error de autenticación",
-                    text: response.data.message || "Usuario o contraseña incorrectos",
-                });
+                showAlert("error", "Error de autenticación", data.message || "Usuario o contraseña incorrectos");
             }
         } catch (error) {
-            Swal.fire({
-                icon: "error",
-                title: "Error de inicio de sesión",
-                text: "Verifica tus credenciales e intenta nuevamente.",
-            });
+            showAlert("error", "Error de inicio de sesión", "Verifica tus credenciales e intenta nuevamente.");
             console.error("Error de inicio de sesión:", error);
         } finally {
             setLoading(false);
         }
     };
 
-    const handleRegisterClick = () => {
-        navigate('/register');
-    };
     return (
         <div 
             className="min-vh-100 d-flex flex-row align-items-center"
-            style={{ backgroundColor: '#c7c8cb' }} // Fondo gris oscuro
+            style={{ backgroundColor: '#c7c8cb' }}
         >
             <CContainer>
                 <CRow className="justify-content-center">
@@ -98,7 +77,6 @@ const Login = () => {
                                             <CFormInput
                                                 placeholder="Username"
                                                 autoComplete="username"
-                                                type="text"
                                                 value={username}
                                                 onChange={(e) => setUsername(e.target.value)}
                                             />
@@ -117,18 +95,13 @@ const Login = () => {
                                         </CInputGroup>
                                         <CRow>
                                             <CCol xs={6}>
-                                                <CButton type="submit" color="primary" className="px-4" disabled={loading} >
-                                                {loading ? (
-                                                    <CSpinner size="sm" className="me-2"/>
-                                                ):(
-                                                    <CIcon icon={cilLockLocked} className="me-2"/>
-                                                )}
+                                                <CButton type="submit" color="primary" className="px-4" disabled={loading}>
+                                                    {loading ? <CSpinner size="sm" className="me-2"/> : <CIcon icon={cilLockLocked} className="me-2"/>}
                                                     Iniciar Sesión
                                                 </CButton>
                                             </CCol>
                                             <CCol xs={6} className="text-right">
-                                                <CButton color="link" className="px-0" onClick={handleRegisterClick}>
-                                                
+                                                <CButton color="link" className="px-0" onClick={() => navigate('/register')}>
                                                     ¿No tienes cuenta? ¡Regístrate!
                                                 </CButton>
                                             </CCol>
@@ -136,22 +109,21 @@ const Login = () => {
                                     </CForm>
                                 </CCardBody>
                             </CCard>
-                            <CCard className="text-white bg-primary py-5"
+                            <CCard 
+                                className="text-white bg-primary py-5"
                                 style={{
                                     width: '44%',
-                                    backgroundImage: `url(${imagenLogin})`,  // Imagen como fondo
-                                    backgroundSize: 'cover',                  // Ajusta la imagen para cubrir todo el espacio
-                                    backgroundPosition: 'center'              // Centra la imagen
+                                    backgroundImage: `url(${imagenLogin})`,
+                                    backgroundSize: 'cover',
+                                    backgroundPosition: 'center'
                                 }}
-                            >
-                                {/* Aquí puedes agregar más contenido si es necesario */}
-                            </CCard>
+                            />
                         </CCardGroup>
                     </CCol>
                 </CRow>
             </CContainer>
         </div>
-    )
-}
+    );
+};
 
 export default Login;

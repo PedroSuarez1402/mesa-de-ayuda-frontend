@@ -4,21 +4,20 @@ import { useNavigate } from 'react-router-dom';
 import clienteAxios from '../../config/axios';
 import { CButton, CCard, CCardBody, CCardFooter, CCardHeader, CCardText, CCardTitle, CCol, CRow, CSpinner } from '@coreui/react';
 import { AuthContext } from '../../context/AuthContext';
+import FormRequests from './FormRequests';
 
 const Requests = () => {
     const [requests, setRequests] = useState([]);
     const {user} = useContext(AuthContext);
     const [loading, setLoading] = useState(false);
+    const [isCreating, setIsCreating] = useState(false)
     const [error, setError] = useState(null);
 
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchRequest = async() => {
-            if(!user){
-                navigate('/login');
-                return;
-            }
+            
             try {
                 const token = localStorage.getItem('token');
                 if(!token){
@@ -34,12 +33,16 @@ const Requests = () => {
         };
         fetchRequest();
     },[user, navigate])
+
+    const handleOpenModal = () => setIsCreating(true);
+    const handleCloseModal = () => setIsCreating(false);
     return (
         <CRow className='g-3'>
             <CCol xs={12}>
                 <CCard>
-                    <CCardHeader>
+                    <CCardHeader className='d-flex justify-content-between align-items-center'>
                         <strong>Solicitudes</strong>
+                        <CButton color='primary' onClick={handleOpenModal}>Crear Solicitud</CButton>
                     </CCardHeader>
                     <CCardBody>
                     {loading ? (
@@ -78,6 +81,7 @@ const Requests = () => {
                     </CCardBody>
                 </CCard>
             </CCol>
+            {isCreating && <FormRequests visible={isCreating} onClose={handleCloseModal} />}
         </CRow>
 
     )
