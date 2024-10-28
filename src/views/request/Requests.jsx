@@ -54,7 +54,7 @@ const Requests = () => {
                     ) : (
                         <CRow className='g-3'>
                         {requests.map((request) => (
-                            <CCol xs={12} sm={6} md={4} lg={3} key={request.id}>
+                            <CCol xs={12} sm={6} md={4} lg={3} key={request}>
                                 <CCard className='h-100'>
                                 <CCardHeader>
                                     <h6 className='mb-2'>Solicitud #{request.id}</h6>

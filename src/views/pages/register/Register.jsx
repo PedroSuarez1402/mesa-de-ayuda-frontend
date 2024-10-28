@@ -59,7 +59,7 @@ const Register = () => {
                 Swal.fire({
                     icon: 'success',
                     title: 'Registro exitoso',
-                    text: 'Usuario registrado exitosamente'
+                    text: 'Por favor, espere 24 horas a que su usario sea activado para iniciar sesion'
                 }).then(() =>
                     navigate('/'));
             } else {
