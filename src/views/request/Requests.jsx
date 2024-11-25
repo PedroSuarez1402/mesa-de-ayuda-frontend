@@ -16,6 +16,11 @@ const Requests = () => {
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState(null);
 
+  const [assigning, SetAssigning] = useState(false);
+  const [tecnico, setTecnico] = useState([]);
+  const [selectRequest, setSelectRequest] = useState(null);
+  const [selectTecnico, setSelectTecnico] = useState("");
+
   const navigate = useNavigate();
 
   const fetchRequest = async () => {
@@ -40,21 +45,32 @@ const Requests = () => {
     }
   };
 
-  useEffect(() => {
-    /* const fetchRequest = async () => {
-      if (!user || loading) return;
+  const fetchTecnicos = async() => {
+    try {
+        const response = await clienteAxios.get("/usuarios")
+        setTecnico(response.data.users)
+    } catch (error) {
+        console.error("Error al cargar los técnicos:", error);
+        setError("No se pudieron cargar los técnicos.");
+    }
+  }
 
-      try {
-        const response = await clienteAxios.get(
-          `/solicitudes/${user.id}/${user.rol}`
-        );
-        setRequests(response.data.solicitudes);
-      } catch (error) {
-        console.error("error al cargar las solicitudes:", error);
-        setError("Error al cargar las solicitudes");
-      }
-    };
-    */
+  const handleAssign = (requestId) => {
+    setSelectRequest(requestId)
+    SetAssigning(true)
+    fetchTecnicos();
+  }
+
+  const handleAssignSubmit = async() => {
+    try {
+        const response = await clienteAxios.post("/asignar-solicitud")
+    } catch (error) {
+        
+    }
+  }
+
+  useEffect(() => {
+    
     fetchRequest(); 
   }, []);
 
@@ -68,9 +84,12 @@ const Requests = () => {
         <CCard>
           <CCardHeader className="d-flex justify-content-between align-items-center">
             <strong>Solicitudes</strong>
-            <CButton color="primary" onClick={handleOpenModal}>
-              Crear Solicitud
-            </CButton>
+            {user?.rol === 1 && (
+                <CButton color="primary" onClick={handleOpenModal}>
+                Crear Solicitud
+              </CButton>
+            )}
+            
           </CCardHeader>
           <CCardBody>
             {loading ? (
@@ -99,7 +118,7 @@ const Requests = () => {
                           variant="outline"
                           className="w-100"
                         >
-                          Ver
+                          Asignar
                         </CButton>
                       </CCardFooter>
                     </CCard>
