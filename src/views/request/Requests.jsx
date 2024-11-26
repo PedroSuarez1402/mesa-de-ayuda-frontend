@@ -3,23 +3,19 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import clienteAxios from "../../config/axios";
-import { CButton, CCard, CCardBody, CCardFooter, CCardHeader, CCardText, CCardTitle, CCol, CRow, CSpinner,
-} from "@coreui/react";
-//import { AuthContext } from "../../context/AuthContext";
+import { CButton, CCard, CCardBody, CCardFooter, CCardHeader, CCardText, CCardTitle, CCol, CRow, CSpinner } from "@coreui/react";
 import FormRequests from "./FormRequests";
+import FormAssign from "./FormAssign";
 
 const Requests = () => {
   const [requests, setRequests] = useState([]);
-  //const { user, loading } = useContext(AuthContext);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState(null);
 
-  const [assigning, SetAssigning] = useState(false);
-  const [tecnico, setTecnico] = useState([]);
+  const [assigning, setAssigning] = useState(false);
   const [selectRequest, setSelectRequest] = useState(null);
-  const [selectTecnico, setSelectTecnico] = useState("");
 
   const navigate = useNavigate();
 
@@ -45,37 +41,19 @@ const Requests = () => {
     }
   };
 
-  const fetchTecnicos = async() => {
-    try {
-        const response = await clienteAxios.get("/usuarios")
-        setTecnico(response.data.users)
-    } catch (error) {
-        console.error("Error al cargar los técnicos:", error);
-        setError("No se pudieron cargar los técnicos.");
-    }
-  }
-
   const handleAssign = (requestId) => {
+    console.log("Solicitud seleccionada para asignar:", requestId)
     setSelectRequest(requestId)
-    SetAssigning(true)
-    fetchTecnicos();
+    setAssigning(true)
   }
-
-  const handleAssignSubmit = async() => {
-    try {
-        const response = await clienteAxios.post("/asignar-solicitud")
-    } catch (error) {
-        
-    }
-  }
-
-  useEffect(() => {
-    
-    fetchRequest(); 
-  }, []);
 
   const handleOpenModal = () => setIsCreating(true);
   const handleCloseModal = () => setIsCreating(false);
+
+  useEffect(() => {
+    fetchRequest(); 
+  }, []);
+  
   return loading ? (
     <CSpinner color="primary" />
   ) : (
@@ -109,17 +87,22 @@ const Requests = () => {
                       <CCardBody>
                         <CCardTitle>{request.name}</CCardTitle>
                         <CCardText>
-                          {request.description} <br />
+                          {request.description}
                         </CCardText>
                       </CCardBody>
                       <CCardFooter>
-                        <CButton
+                        {user?.rol === 2 && (
+                          <CButton
                           color="primary"
                           variant="outline"
                           className="w-100"
+                          onClick={() => handleAssign(request.id)}
+                          
                         >
                           Asignar
                         </CButton>
+                        )}
+                        
                       </CCardFooter>
                     </CCard>
                   </CCol>
@@ -131,6 +114,14 @@ const Requests = () => {
       </CCol>
       {isCreating && (
         <FormRequests visible={isCreating} onClose={handleCloseModal} />
+      )}
+      {assigning && (
+        <FormAssign
+          requestId={selectRequest}
+          visible={assigning}
+          onClose={() => setAssigning(false)}
+          onSuccess={fetchRequest}
+        />
       )}
     </CRow>
   );
