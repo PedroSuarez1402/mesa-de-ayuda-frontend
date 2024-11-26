@@ -1,6 +1,5 @@
-/* eslint-disable prettier/prettier */
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { CFormInput, CPagination, CPaginationItem } from '@coreui/react'
 
 const SearchAndPagination = ({ data, itemsPerPage, onFilter }) => {

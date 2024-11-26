@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react'
 import clienteAxios from '../../config/axios';
 import { CButton, CFormSelect, CModal, CModalBody, CModalFooter, CModalHeader } from '@coreui/react';
