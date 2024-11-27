@@ -1,25 +1,12 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import clienteAxios from '../../config/axios';
 import { CButton, CFormSelect, CModal, CModalBody, CModalFooter, CModalHeader } from '@coreui/react';
 
-function FormAssign({requestId, visible, onClose, onSuccess}) {
-  const [tecnico, setTecnico] = useState([]);
+function FormAssign({requestId, visible, onClose, onSuccess, tecnicos}) {
   const [selectTecnico, setSelectTecnico] = useState("");
   const [error, setError] = useState(null)
 
-  const fetchTecnicos = async () => {
-    try {
-        const response = await clienteAxios.get("/usuarios");
-        const tecnicosFiltrados = response.data.users.filter(
-            (user) => user.rol_id === 3
-        );
-        setTecnico(tecnicosFiltrados)
-    } catch (error) {
-        console.error("Error al cargar los tecnicos:", error)
-        setError("No se pudieron cargar los tecnicos");
-    }
-  }
 
   const handleAssignSubmit = async () => {
     try {
@@ -35,9 +22,7 @@ function FormAssign({requestId, visible, onClose, onSuccess}) {
         setError("No se pudo asignar la solicitud.");
     }
   }
-  useEffect(() => {
-    fetchTecnicos();
-  }, [])
+  
   return (
     <CModal visible={visible} onClose={onClose}>
         <CModalHeader>Asignar Técnico</CModalHeader>
@@ -48,9 +33,9 @@ function FormAssign({requestId, visible, onClose, onSuccess}) {
               onChange={(e) => setSelectTecnico(e.target.value)}
             >
                 <option>Seleccione un tecnico</option>
-                {tecnico.map((tech) => (
+                {tecnicos.map((tech) => (
                     <option key={tech.id} value={tech.id}>
-                        {tech.name}
+                        {tech.name} - {tech.phone}
                     </option>
                 ))}
             </CFormSelect>

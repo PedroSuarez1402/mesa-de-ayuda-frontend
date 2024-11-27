@@ -4,8 +4,10 @@ import {
   CTable, CTableBody, CTableDataCell, CTableHead, 
   CTableHeaderCell, CTableRow, CSpinner 
 } from '@coreui/react';
+import CIcon from '@coreui/icons-react';
 import clienteAxios from '../../config/axios';
 import SearchAndPagination from '../../components/SearchAndPagination'; // Componente de búsqueda y paginación
+import { cilPencil } from '@coreui/icons';
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -90,11 +92,8 @@ const Users = () => {
                         <CTableDataCell>{getRoleName(user.rol_id)}</CTableDataCell>
                         <CTableDataCell>{getStatusName(user.is_active)}</CTableDataCell>
                         <CTableDataCell>
-                          <CButton color="warning" size="sm" className="me-2">
-                            Editar
-                          </CButton>
-                          <CButton color="danger" size="sm">
-                            Eliminar
+                          <CButton color="warning" size="sm">
+                            <CIcon icon={cilPencil} size="sm" />
                           </CButton>
                         </CTableDataCell>
                       </CTableRow>
