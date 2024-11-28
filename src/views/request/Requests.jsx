@@ -174,6 +174,7 @@ const Requests = () => {
           visible={!!viewingRequest}
           onClose={handleCloseViewRequest}
           request={viewingRequest}
+          tecnicos={tecnicos}
         />
       )}
     </CRow>
