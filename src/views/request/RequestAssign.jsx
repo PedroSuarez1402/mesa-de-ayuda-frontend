@@ -4,7 +4,7 @@ import { CButton, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle } 
 const RequestAssign = ({visible, onClose, request, tecnicos}) => {
     if(!request) return null;
     console.log("Detalles de la solicitud",request);
-    const tecnicoAsignado = tecnicos.find(tecnico => tecnico.id === request.user_id);
+    const tecnicoAsignado = tecnicos.find(tecnico => tecnico.id === request.id_tecnico);
     console.log("tecnicoAsignado", tecnicoAsignado);
 
     console.log("tecnicos", tecnicos);
@@ -18,8 +18,8 @@ const RequestAssign = ({visible, onClose, request, tecnicos}) => {
             <CModalBody>
                 
                 <p><strong>Descripción:</strong> {request.description}</p>
-                <p><strong>Técnico Asignado:</strong> {tecnicos?.name || "No asignado"}</p>
-                <p><strong>Teléfono del Técnico:</strong> {tecnicos?.phone || "No disponible"}</p>
+                <p><strong>Técnico Asignado:</strong> {tecnicoAsignado?.name || "No asignado"}</p>
+                <p><strong>Teléfono del Técnico:</strong> {tecnicoAsignado?.phone || "No disponible"}</p>
 
             </CModalBody>
             <CModalFooter>

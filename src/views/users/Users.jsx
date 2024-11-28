@@ -1,19 +1,18 @@
-import { useEffect, useState } from 'react';
-import { 
-  CButton, CCard, CCardBody, CCardHeader, CCol, CRow, 
-  CTable, CTableBody, CTableDataCell, CTableHead, 
-  CTableHeaderCell, CTableRow, CSpinner 
-} from '@coreui/react';
-import CIcon from '@coreui/icons-react';
-import clienteAxios from '../../config/axios';
-import SearchAndPagination from '../../components/SearchAndPagination'; // Componente de búsqueda y paginación
-import { cilPencil } from '@coreui/icons';
+import { useEffect, useState } from "react";
+import { CButton, CCard, CCardBody, CCardHeader, CCol, CRow, CTable, CTableBody, CTableDataCell, CTableHead, CTableHeaderCell, CTableRow, CSpinner,
+} from "@coreui/react";
+import CIcon from "@coreui/icons-react";
+import clienteAxios from "../../config/axios";
+import SearchAndPagination from "../../components/SearchAndPagination"; // Componente de búsqueda y paginación
+import { cilPencil } from "@coreui/icons";
+import UserForm from "./UserForm";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]); // Usuarios filtrados
   const [loading, setLoading] = useState(true); // Estado de carga
   const [error, setError] = useState(null); // Estado de error
+  const [modalUsuario, setModalUsuario] = useState(false); // Estado del modal de usuario
 
   // Función para obtener el nombre del rol
   const getRoleName = (roleId) => {
@@ -33,12 +32,12 @@ const Users = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await clienteAxios.get('/usuarios');
+      const response = await clienteAxios.get("/usuarios");
       setUsers(response.data.users);
       setFilteredUsers(response.data.users);
     } catch (error) {
-      console.error('Error fetching users:', error);
-      setError('No se pudo cargar la lista de usuarios.');
+      console.error("Error fetching users:", error);
+      setError("No se pudo cargar la lista de usuarios.");
     } finally {
       setLoading(false);
     }
@@ -54,7 +53,7 @@ const Users = () => {
         <CCard className="mb-4">
           <CCardHeader className="d-flex justify-content-between align-items-center">
             <strong>Usuarios</strong>
-            <CButton color="primary">
+            <CButton color="primary" onClick={() => setModalUsuario(true)}>
               Crear Usuario
             </CButton>
           </CCardHeader>
@@ -84,13 +83,17 @@ const Users = () => {
                     </CTableRow>
                   </CTableHead>
                   <CTableBody>
-                    {filteredUsers.map((user, index) => (
-                      <CTableRow key={index}>
+                    {filteredUsers.map((user, id) => (
+                      <CTableRow key={id}>
                         <CTableDataCell>{user.username}</CTableDataCell>
                         <CTableDataCell>{user.name}</CTableDataCell>
                         <CTableDataCell>{user.phone}</CTableDataCell>
-                        <CTableDataCell>{getRoleName(user.rol_id)}</CTableDataCell>
-                        <CTableDataCell>{getStatusName(user.is_active)}</CTableDataCell>
+                        <CTableDataCell>
+                          {getRoleName(user.rol_id)}
+                        </CTableDataCell>
+                        <CTableDataCell>
+                          {getStatusName(user.is_active)}
+                        </CTableDataCell>
                         <CTableDataCell>
                           <CButton color="warning" size="sm">
                             <CIcon icon={cilPencil} size="sm" />
@@ -105,6 +108,11 @@ const Users = () => {
           </CCardBody>
         </CCard>
       </CCol>
+      <UserForm
+        visible={modalUsuario}
+        onClose={() => setModalUsuario(false)}
+        onUserCreated={fetchUsers}
+      />
     </CRow>
   );
 };
