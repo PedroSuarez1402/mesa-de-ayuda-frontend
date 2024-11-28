@@ -1,18 +1,21 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CButton, CForm, CFormInput, CFormSelect, CModal, CModalHeader, CModalBody, CModalFooter,
 } from "@coreui/react";
 import clienteAxios from "../../config/axios";
 
 const UserForm = ({ visible, onClose, onUserCreated }) => {
-  const [formData, setFormData] = useState({
+  const initialFormData = {
     username: "",
     name: "",
     password: "",
     phone: "",
     rol_id: "1",
     help_desk_id: "",
-  });
+  };
+
+  const [formData, setFormData] = useState(initialFormData);
 
   const mesasAyuda = [
     { id: 1, nombre: "Mesa Ayuda Sistemas" },
@@ -20,6 +23,13 @@ const UserForm = ({ visible, onClose, onUserCreated }) => {
     { id: 3, nombre: "Mesa Ayuda Contabilidad" },
     { id: 4, nombre: "Mesa Ayuda Talento Humano" },
   ];
+
+  useEffect(() => {
+    if (!visible) {
+      // Reinicia el formulario al cerrar el modal
+      setFormData(initialFormData);
+    }
+  }, [visible]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -103,7 +113,6 @@ const UserForm = ({ visible, onClose, onUserCreated }) => {
               ))}
             </CFormSelect>
           )}
-          
         </CForm>
       </CModalBody>
       <CModalFooter>
@@ -111,8 +120,8 @@ const UserForm = ({ visible, onClose, onUserCreated }) => {
           Cerrar
         </CButton>
         <CButton type="submit" color="primary" onClick={handleSubmit}>
-            Crear
-          </CButton>
+          Crear
+        </CButton>
       </CModalFooter>
     </CModal>
   );
