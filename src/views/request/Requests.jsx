@@ -3,18 +3,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import clienteAxios from "../../config/axios";
-import {
-  CButton,
-  CCard,
-  CCardBody,
-  CCardFooter,
-  CCardHeader,
-  CCardText,
-  CCardTitle,
-  CCol,
-  CRow,
-  CSpinner,
-} from "@coreui/react";
+import { CButton, CCard, CCardBody, CCardFooter, CCardHeader, CCardText, CCardTitle, CCol, CRow, CSpinner } from "@coreui/react";
 import FormRequests from "./FormRequests";
 import FormAssign from "./FormAssign";
 import RequestAssign from "./RequestAssign";
@@ -106,17 +95,24 @@ const Requests = () => {
               <CRow className="g-3">
                 {requests.map((request) => {
                   const isAssigned = request.status_request_id === 2; // Checar estado
+                  const isInProcess = request.status_request_id === 3;
+                  const badgeClass = isAssigned 
+                  ? "bg-success"
+                  : isInProcess
+                  ? "bg-primary"
+                  : "bg-warning";
+                const badgeText = isAssigned
+                  ? "Asignada"
+                  : isInProcess
+                  ? "En Proceso"
+                  : "Creada";
                   return (
                     <CCol xs={12} sm={6} md={4} lg={3} key={request.id}>
                       <CCard className="h-100">
                         <CCardHeader className="d-flex justify-content-between align-items-center">
                           <h6 className="mb-2">Solicitud #{request.id}</h6>
-                          <span
-                            className={`badge ${
-                              isAssigned ? "bg-success" : "bg-warning"
-                            }`}
-                          >
-                            {isAssigned ? "Asignada" : "Pendiente"}
+                          <span className={`badge ${badgeClass}`}>
+                            {badgeText}
                           </span>
                         </CCardHeader>
                         <CCardBody>
@@ -175,6 +171,7 @@ const Requests = () => {
           onClose={handleCloseViewRequest}
           request={viewingRequest}
           tecnicos={tecnicos}
+          onRequestProcess={fetchRequest}
         />
       )}
     </CRow>

@@ -1,9 +1,25 @@
 /* eslint-disable react/prop-types */
 import { CButton, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle } from "@coreui/react"
+import clienteAxios from "../../config/axios";
 
-const RequestAssign = ({visible, onClose, request, tecnicos}) => {
+const RequestAssign = ({visible, onClose, request, tecnicos, onRequestProcessed}) => {
     if(!request) return null;
     console.log("Detalles de la solicitud",request);
+
+    const handleProcessRequest = async () => {
+        try {
+            await clienteAxios.post("/procesar-solicitud", {
+                request_id: request.id,
+            });
+            alert("Solicitud procesada exitosamente");
+            onRequestProcessed();
+            onClose();
+            } catch (error) {
+                console.error("Error al procesar la solicitud:", error);
+                alert("Error al procesar la solicitud.");
+            }
+    }
+
     const tecnicoAsignado = tecnicos.find(tecnico => tecnico.id === request.id_tecnico);
     console.log("tecnicoAsignado", tecnicoAsignado);
 
@@ -24,6 +40,11 @@ const RequestAssign = ({visible, onClose, request, tecnicos}) => {
             </CModalBody>
             <CModalFooter>
                 <CButton color="secondary" onClick={onClose}>Cerrar</CButton>
+                        {request.status_request_id === 2 && (
+                <CButton color="primary" onClick={handleProcessRequest}>
+                    Procesar
+                </CButton>
+                )}
             </CModalFooter>
         </CModal>
     )
