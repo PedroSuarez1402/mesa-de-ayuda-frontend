@@ -6,6 +6,7 @@ import clienteAxios from "../../config/axios";
 import SearchAndPagination from "../../components/SearchAndPagination"; // Componente de búsqueda y paginación
 import { cilPencil } from "@coreui/icons";
 import UserForm from "./UserForm";
+import UserEdit from "./userEdit";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -13,6 +14,8 @@ const Users = () => {
   const [loading, setLoading] = useState(true); // Estado de carga
   const [error, setError] = useState(null); // Estado de error
   const [modalUsuario, setModalUsuario] = useState(false); // Estado del modal de usuario
+  const [modalEditUsuario, setModalEditUsuario] = useState(false); // Estado del modal de edición de usuario
+  const [selectedUser, setSelectedUser] = useState(null); // Usuario seleccionado para edición
 
   // Función para obtener el nombre del rol
   const getRoleName = (roleId) => {
@@ -33,8 +36,12 @@ const Users = () => {
   const fetchUsers = async () => {
     try {
       const response = await clienteAxios.get("/usuarios");
-      setUsers(response.data.users);
-      setFilteredUsers(response.data.users);
+      if (response.data && response.data.users) {
+        setUsers(response.data.users);
+        setFilteredUsers(response.data.users);
+      } else {
+        throw new Error("Respuesta inesperada del servidor");
+      }
     } catch (error) {
       console.error("Error fetching users:", error);
       setError("No se pudo cargar la lista de usuarios.");
@@ -46,6 +53,11 @@ const Users = () => {
   useEffect(() => {
     fetchUsers();
   }, []);
+
+  const handleEditUser = (user) => {
+    setSelectedUser(user);
+    setModalEditUsuario(true);
+  };
 
   return (
     <CRow>
@@ -95,7 +107,7 @@ const Users = () => {
                           {getStatusName(user.is_active)}
                         </CTableDataCell>
                         <CTableDataCell>
-                          <CButton color="warning" size="sm">
+                          <CButton color="warning" size="sm" onClick={() => handleEditUser(user)}>
                             <CIcon icon={cilPencil} size="sm" />
                           </CButton>
                         </CTableDataCell>
@@ -112,6 +124,12 @@ const Users = () => {
         visible={modalUsuario}
         onClose={() => setModalUsuario(false)}
         onUserCreated={fetchUsers}
+      />
+      <UserEdit
+        visible={modalEditUsuario}
+        onClose={() => setModalEditUsuario(false)}
+        user={selectedUser}
+        onUserUpdated={fetchUsers}
       />
     </CRow>
   );
