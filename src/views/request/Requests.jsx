@@ -120,7 +120,7 @@ const Requests = () => {
                           <CCardText>{request.description}</CCardText>
                         </CCardBody>
                         <CCardFooter>
-                          {isAssigned ? (
+                          {(isAssigned || isInProcess) && (
                             // Mostrar botón "Ver" para todos los usuarios si la solicitud está asignada
                             <CButton
                               color="info"
@@ -130,18 +130,16 @@ const Requests = () => {
                             >
                               Ver
                             </CButton>
-                          ) : (
-                            // Mostrar botón "Asignar" solo para usuarios de rol 2 si la solicitud no está asignada
-                            user?.rol === 2 && (
-                              <CButton
-                                color="primary"
-                                variant="outline"
-                                className="w-100"
-                                onClick={() => handleAssign(request.id)}
-                              >
-                                Asignar
-                              </CButton>
-                            )
+                          )} {!isAssigned && !isInProcess && user?.rol === 2 && (
+                            // Mostrar botón "Asignar" solo para usuarios de rol 2 si la solicitud no está asignada ni en proceso
+                            <CButton
+                              color="primary"
+                              variant="outline"
+                              className="w-100"
+                              onClick={() => handleAssign(request.id)}
+                            >
+                              Asignar
+                            </CButton>
                           )}
                         </CCardFooter>
                       </CCard>
@@ -171,7 +169,8 @@ const Requests = () => {
           onClose={handleCloseViewRequest}
           request={viewingRequest}
           tecnicos={tecnicos}
-          onRequestProcess={fetchRequest}
+          onRequestProcessed={fetchRequest}
+          user={user}
         />
       )}
     </CRow>

@@ -2,7 +2,7 @@
 import { CButton, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle } from "@coreui/react"
 import clienteAxios from "../../config/axios";
 
-const RequestAssign = ({visible, onClose, request, tecnicos, onRequestProcessed}) => {
+const RequestAssign = ({visible, onClose, request, tecnicos, onRequestProcessed, user}) => {
     if(!request) return null;
     console.log("Detalles de la solicitud",request);
 
@@ -40,7 +40,7 @@ const RequestAssign = ({visible, onClose, request, tecnicos, onRequestProcessed}
             </CModalBody>
             <CModalFooter>
                 <CButton color="secondary" onClick={onClose}>Cerrar</CButton>
-                        {request.status_request_id === 2 && (
+                {request.status_request_id === 2 && user?.rol === 3 && (
                 <CButton color="primary" onClick={handleProcessRequest}>
                     Procesar
                 </CButton>
