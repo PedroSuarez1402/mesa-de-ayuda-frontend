@@ -3,7 +3,18 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import clienteAxios from "../../config/axios";
-import { CButton, CCard, CCardBody, CCardFooter, CCardHeader, CCardText, CCardTitle, CCol, CRow, CSpinner } from "@coreui/react";
+import {
+  CButton,
+  CCard,
+  CCardBody,
+  CCardFooter,
+  CCardHeader,
+  CCardText,
+  CCardTitle,
+  CCol,
+  CRow,
+  CSpinner,
+} from "@coreui/react";
 import FormRequests from "./FormRequests";
 import FormAssign from "./FormAssign";
 import RequestAssign from "./RequestAssign";
@@ -52,7 +63,6 @@ const Requests = () => {
   };
 
   const handleAssign = (requestId) => {
-    console.log("Solicitud seleccionada para asignar:", requestId);
     setSelectRequest(requestId);
     setAssigning(true);
   };
@@ -96,16 +106,21 @@ const Requests = () => {
                 {requests.map((request) => {
                   const isAssigned = request.status_request_id === 2; // Checar estado
                   const isInProcess = request.status_request_id === 3;
-                  const badgeClass = isAssigned 
-                  ? "bg-success"
-                  : isInProcess
-                  ? "bg-primary"
-                  : "bg-warning";
-                const badgeText = isAssigned
-                  ? "Asignada"
-                  : isInProcess
-                  ? "En Proceso"
-                  : "Creada";
+                  const isInFinalize = request.status_request_id === 4;
+                  const badgeClass = isAssigned
+                    ? "bg-success"
+                    : isInProcess
+                    ? "bg-primary"
+                    : isInFinalize
+                    ? "bg-info"
+                    : "bg-danger";
+                  const badgeText = isAssigned
+                    ? "Asignada"
+                    : isInProcess
+                    ? "En Proceso"
+                    : isInFinalize
+                    ? "Finalizada"
+                    : "Creada";
                   return (
                     <CCol xs={12} sm={6} md={4} lg={3} key={request.id}>
                       <CCard className="h-100">
@@ -120,26 +135,38 @@ const Requests = () => {
                           <CCardText>{request.description}</CCardText>
                         </CCardBody>
                         <CCardFooter>
-                          {(isAssigned || isInProcess) && (
-                            // Mostrar botón "Ver" para todos los usuarios si la solicitud está asignada
-                            <CButton
-                              color="info"
-                              variant="outline"
-                              className="w-100"
-                              onClick={() => handleViewRequest(request)}
-                            >
-                              Ver
-                            </CButton>
-                          )} {!isAssigned && !isInProcess && user?.rol === 2 && (
-                            // Mostrar botón "Asignar" solo para usuarios de rol 2 si la solicitud no está asignada ni en proceso
-                            <CButton
-                              color="primary"
-                              variant="outline"
-                              className="w-100"
-                              onClick={() => handleAssign(request.id)}
-                            >
-                              Asignar
-                            </CButton>
+                          {request.technical_description ? (
+                            <p className="mb-2">
+                              <strong>Descripción Técnica:</strong>{" "}
+                              {request.technical_description}
+                            </p>
+                          ) : (
+                            <>
+                              {/* Botón "Ver" para solicitudes asignadas o en proceso */}
+                              {(isAssigned || isInProcess) && (
+                                <CButton
+                                  color="info"
+                                  variant="outline"
+                                  className="w-100"
+                                  onClick={() => handleViewRequest(request)}
+                                >
+                                  Ver
+                                </CButton>
+                              )}
+                              {/* Botón "Asignar" para solicitudes no asignadas (solo rol 2) */}
+                              {!isAssigned &&
+                                !isInProcess &&
+                                user?.rol === 2 && (
+                                  <CButton
+                                    color="primary"
+                                    variant="outline"
+                                    className="w-100"
+                                    onClick={() => handleAssign(request.id)}
+                                  >
+                                    Asignar
+                                  </CButton>
+                                )}
+                            </>
                           )}
                         </CCardFooter>
                       </CCard>

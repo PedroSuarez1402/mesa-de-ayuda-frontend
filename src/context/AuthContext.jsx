@@ -16,7 +16,7 @@ export const AuthProvider = ({children}) => {
         }
         try {
             const response = await clienteAxios.get("/session-data");
-            console.log("peticion de sesion:", response.data)
+            
             setUser(response.data.user)
         } catch (error) {
             console.error("Error al obtener los datos del usuario de la sesion:", error)
