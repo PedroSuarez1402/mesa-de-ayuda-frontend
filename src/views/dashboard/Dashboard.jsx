@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import Users from '../users/Users';
 import { useNavigate } from 'react-router-dom';
 import clienteAxios from '../../config/axios';
+import Requests from '../request/Requests';
 
 const Dashboard = () => {
   const [role, setRole] = useState(null);
@@ -41,7 +42,7 @@ const Dashboard = () => {
         {role?.rol === 4 ? (
           <Users />
         ) : (
-          <p>No tienes permiso para acceder a esta sección.</p>
+          <Requests/>
         )}
       </CCol>
     </CRow>
