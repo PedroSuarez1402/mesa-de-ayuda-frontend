@@ -79,7 +79,7 @@ const FormRequests = ({ visible , onClose, onSuccess }) => {
         </CModalBody>
         <CModalFooter>
             <CButton color='primary' onClick={handleSubmit}>Crear Solicitud</CButton>
-            <CButton color='secondary' onClose={onClose}>Cerrar</CButton>
+            <CButton color='secondary' onClick={onClose}>Cerrar</CButton>
             {error && <p className="error">{error}</p>}
         </CModalFooter>
     </CModal>

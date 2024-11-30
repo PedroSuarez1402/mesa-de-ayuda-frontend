@@ -5,16 +5,15 @@ import { CButton, CForm, CFormInput, CFormSelect, CModal, CModalHeader, CModalBo
 import clienteAxios from "../../config/axios";
 
 const UserEdit = ({ visible, onClose, user, onUserUpdated }) => {
+
   const initialFormData = {
-    id: user?.id || "",
+    id_user: user?.id || "", //  id_user para identificar al usuario
     is_active: user?.is_active || 0,
     name: user?.name || "",
     phone: user?.phone || "",
     rol_id: user?.rol_id || "1",
-    username: user?.username || "",
     help_desk_id: user?.help_desk_id || "",
   };
-
   const [formData, setFormData] = useState(initialFormData);
 
   const mesasAyuda = [
@@ -27,12 +26,11 @@ const UserEdit = ({ visible, onClose, user, onUserUpdated }) => {
   useEffect(() => {
     if (user) {
       setFormData({
-        id: user.id,
-        is_active: user.is_active,
+        id_user: user.id,
+        estado: user.is_active,
         name: user.name,
         phone: user.phone,
         rol_id: user.rol_id,
-        username: user.username,
         help_desk_id: user.help_desk_id || "",
       });
     }
@@ -44,7 +42,7 @@ const UserEdit = ({ visible, onClose, user, onUserUpdated }) => {
       ...formData,
       [name]: value,
     });
-    console.log(formData)
+    
   };
 
   const handleSubmit = async (e) => {
@@ -58,7 +56,7 @@ const UserEdit = ({ visible, onClose, user, onUserUpdated }) => {
     } catch (error) {
       console.error("Error actualizando usuario:", error);
       alert("Error al actualizar el usuario");
-      console.log(formData)
+      
     }
   };
 
@@ -67,20 +65,8 @@ const UserEdit = ({ visible, onClose, user, onUserUpdated }) => {
       <CModalHeader>Editar Usuario</CModalHeader>
       <CModalBody>
         <CForm>
-        <CFormInput
-            label="is_active"
-            name="is_active"
-            value={formData.is_active}
-            onChange={handleChange}
-            required
-        />
-        <CFormInput
-            label="Username"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            required
-          />
+        
+        
           <CFormInput
             label="Nombre"
             name="name"
@@ -95,6 +81,15 @@ const UserEdit = ({ visible, onClose, user, onUserUpdated }) => {
             onChange={handleChange}
             required
           />
+          <CFormSelect
+            label="Estado"
+            name="estado"
+            value={formData.is_active}
+            onChange={handleChange}
+          >
+            <option value={1}>Activo</option>
+            <option value={0}>Inactivo</option>
+          </CFormSelect>
           <CFormSelect
             label="Rol"
             name="rol_id"

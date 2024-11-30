@@ -80,7 +80,7 @@ const Users = () => {
               <>
                 <SearchAndPagination
                   data={users}
-                  itemsPerPage={5}
+                  itemsPerPage={10}
                   onFilter={(filteredData) => setFilteredUsers(filteredData)}
                 />
                 <CTable align="middle" className="mb-0 border" hover responsive>
@@ -107,9 +107,11 @@ const Users = () => {
                           {getStatusName(user.is_active)}
                         </CTableDataCell>
                         <CTableDataCell>
+                        {([1, 3].includes(user.rol_id)) && (
                           <CButton color="warning" size="sm" onClick={() => handleEditUser(user)}>
                             <CIcon icon={cilPencil} size="sm" />
                           </CButton>
+                        )}
                         </CTableDataCell>
                       </CTableRow>
                     ))}
