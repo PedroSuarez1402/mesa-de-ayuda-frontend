@@ -27,7 +27,7 @@ const RequestAssign = ({visible, onClose, request, onRequestProcessed, user}) =>
         try {
             await clienteAxios.post("/finalizar-solicitud", {
                 request_id: request.id,
-                tecnical_description: tecnicalDescription
+                technical_description: tecnicalDescription
             });
             alert("Solicitud finalizada exitosamente");
             onRequestProcessed();
@@ -50,6 +50,11 @@ const RequestAssign = ({visible, onClose, request, onRequestProcessed, user}) =>
                 <p><strong>Descripción:</strong> {request.description}</p>
                 <p><strong>Técnico Asignado:</strong> {request?.tecnico || "No asignado"}</p>
                 <p><strong>Teléfono del Técnico:</strong> {request?.telefono_tecnico || "No disponible"}</p>
+                {request.descripcion_tecnico && (
+                    <p>
+                    <strong>Descripción Técnica:</strong> {request.descripcion_tecnico}
+                    </p>
+                )}
 
                 {request.status_request_id === 3 && user?.rol === 3 && (
                     <>
