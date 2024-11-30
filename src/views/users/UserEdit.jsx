@@ -1,19 +1,29 @@
 /* eslint-disable react/prop-types */
 
 import { useState, useEffect } from "react";
-import { CButton, CForm, CFormInput, CFormSelect, CModal, CModalHeader, CModalBody, CModalFooter } from "@coreui/react";
+import {
+  CButton,
+  CForm,
+  CFormInput,
+  CFormSelect,
+  CModal,
+  CModalHeader,
+  CModalBody,
+  CModalFooter,
+} from "@coreui/react";
 import clienteAxios from "../../config/axios";
+import Swal from "sweetalert2";
 
 const UserEdit = ({ visible, onClose, user, onUserUpdated }) => {
-
   const initialFormData = {
-    id_user: user?.id || "", //  id_user para identificar al usuario
-    is_active: user?.is_active || 0,
+    id_user: user?.id || "",
+    estado: user?.is_active ?? 0,
     name: user?.name || "",
     phone: user?.phone || "",
     rol_id: user?.rol_id || "1",
     help_desk_id: user?.help_desk_id || "",
   };
+
   const [formData, setFormData] = useState(initialFormData);
 
   const mesasAyuda = [
@@ -42,21 +52,72 @@ const UserEdit = ({ visible, onClose, user, onUserUpdated }) => {
       ...formData,
       [name]: value,
     });
-    
+  };
+
+  const validateForm = () => {
+    const { name, phone, rol_id, help_desk_id } = formData;
+
+    if (!name.trim() || /[^a-zA-Z\s]/.test(name)) {
+      Swal.fire({
+        title: "Error",
+        text: "El nombre solo puede contener letras y no puede estar vacío.",
+        icon: "warning",
+        confirmButtonText: "Aceptar",
+      });
+      return false;
+    }
+
+    if (!phone.trim() || !/^\d+$/.test(phone)) {
+      Swal.fire({
+        title: "Error",
+        text: "El teléfono solo puede contener números y no puede estar vacío.",
+        icon: "warning",
+        confirmButtonText: "Aceptar",
+      });
+      return false;
+    }
+
+    if (rol_id === "3" && !help_desk_id.trim()) {
+      Swal.fire({
+        title: "Error",
+        text: "Debe seleccionar una Mesa de Ayuda para el técnico.",
+        icon: "warning",
+        confirmButtonText: "Aceptar",
+      });
+      return false;
+    }
+
+    return true;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
     try {
-      await clienteAxios.post("/actualizar-usuario", formData)
-      
-      alert("Usuario actualizado exitosamente");
-      onUserUpdated(); // Refresca la lista de usuarios
-      onClose(); // Cierra el modal
+      const response = await clienteAxios.post("/actualizar-usuario", formData);
+
+      Swal.fire({
+        title: "¡Éxito!",
+        text: response.data.message || "Usuario actualizado exitosamente.",
+        icon: "success",
+        confirmButtonText: "Aceptar",
+      });
+
+      onUserUpdated();
+      onClose();
     } catch (error) {
       console.error("Error actualizando usuario:", error);
-      alert("Error al actualizar el usuario");
-      
+
+      Swal.fire({
+        title: "Error",
+        text: error.response?.data?.message || "Error al actualizar el usuario.",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
     }
   };
 
@@ -65,8 +126,6 @@ const UserEdit = ({ visible, onClose, user, onUserUpdated }) => {
       <CModalHeader>Editar Usuario</CModalHeader>
       <CModalBody>
         <CForm>
-        
-        
           <CFormInput
             label="Nombre"
             name="name"
@@ -84,7 +143,7 @@ const UserEdit = ({ visible, onClose, user, onUserUpdated }) => {
           <CFormSelect
             label="Estado"
             name="estado"
-            value={formData.is_active}
+            value={formData.estado}
             onChange={handleChange}
           >
             <option value={1}>Activo</option>

@@ -2,24 +2,44 @@
 import { useState } from 'react'
 import clienteAxios from '../../config/axios';
 import { CButton, CFormSelect, CModal, CModalBody, CModalFooter, CModalHeader } from '@coreui/react';
+import Swal from 'sweetalert2';
 
 function FormAssign({requestId, visible, onClose, onSuccess, tecnicos}) {
   const [selectTecnico, setSelectTecnico] = useState("");
-  const [error, setError] = useState(null)
+  
 
 
   const handleAssignSubmit = async () => {
+    if (!selectTecnico) {
+        Swal.fire({
+            title: 'Error',
+            text: 'Debe seleccionar un tecnico',
+            icon: 'error',
+            confirmButtonText: 'Aceptar',
+        })
+        return
+    }
     try {
         const response = await clienteAxios.post("/asignar-solicitud", {
             request_id: requestId,
             technical_id: selectTecnico,
         });
-        alert(response.data.message);
+        Swal.fire({
+            title: 'Asignada exitosamente',
+            text: response.data.message || 'La solicitud ha sido asignada exitosamente',
+            icon: 'success',
+            confirmButtonText: 'Aceptar',
+        })
         onSuccess();
         onClose();
     } catch (error) {
         console.error("Error al asignar la solicitud:", error);
-        setError("No se pudo asignar la solicitud.");
+        Swal.fire({
+            title: 'Error',
+            text: error.response.data.message || 'Ocurrio un error al asignar la solicitud',
+            icon: 'error',
+            confirmButtonText: 'Aceptar',
+        })
     }
   }
   
@@ -27,7 +47,7 @@ function FormAssign({requestId, visible, onClose, onSuccess, tecnicos}) {
     <CModal visible={visible} onClose={onClose}>
         <CModalHeader>Asignar Técnico</CModalHeader>
         <CModalBody>
-            {error && <p className='text-danger'>{error}</p>}
+            
             <CFormSelect 
               value={selectTecnico}
               onChange={(e) => setSelectTecnico(e.target.value)}

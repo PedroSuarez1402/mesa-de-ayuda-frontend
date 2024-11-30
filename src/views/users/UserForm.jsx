@@ -1,9 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
-import { CButton, CForm, CFormInput, CFormSelect, CModal, CModalHeader, CModalBody, CModalFooter,
+import {
+  CButton,
+  CForm,
+  CFormInput,
+  CFormSelect,
+  CModal,
+  CModalHeader,
+  CModalBody,
+  CModalFooter,
 } from "@coreui/react";
 import clienteAxios from "../../config/axios";
+import Swal from "sweetalert2";
 
 const UserForm = ({ visible, onClose, onUserCreated }) => {
   const initialFormData = {
@@ -26,7 +35,6 @@ const UserForm = ({ visible, onClose, onUserCreated }) => {
 
   useEffect(() => {
     if (!visible) {
-      // Reinicia el formulario al cerrar el modal
       setFormData(initialFormData);
     }
   }, [visible]);
@@ -39,16 +47,90 @@ const UserForm = ({ visible, onClose, onUserCreated }) => {
     });
   };
 
+  const validateForm = () => {
+    const { username, name, password, phone, rol_id, help_desk_id } = formData;
+
+    if (!username.trim() || username.includes(" ")) {
+      Swal.fire({
+        title: "Error",
+        text: "El username no puede contener espacios ni estar vacío.",
+        icon: "warning",
+        confirmButtonText: "Aceptar",
+      });
+      return false;
+    }
+
+    if (!name.trim() || /[^a-zA-Z\s]/.test(name)) {
+      Swal.fire({
+        title: "Error",
+        text: "El nombre solo puede contener letras y no puede estar vacío.",
+        icon: "warning",
+        confirmButtonText: "Aceptar",
+      });
+      return false;
+    }
+
+    if (!password || password.length < 8) {
+      Swal.fire({
+        title: "Error",
+        text: "La contraseña debe tener al menos 8 caracteres.",
+        icon: "warning",
+        confirmButtonText: "Aceptar",
+      });
+      return false;
+    }
+
+    if (!phone || !/^\d+$/.test(phone)) {
+      Swal.fire({
+        title: "Error",
+        text: "El teléfono solo puede contener números y no puede estar vacío.",
+        icon: "warning",
+        confirmButtonText: "Aceptar",
+      });
+      return false;
+    }
+
+    if (rol_id === "3" && !help_desk_id) {
+      Swal.fire({
+        title: "Error",
+        text: "Seleccione una Mesa de Ayuda para el técnico.",
+        icon: "warning",
+        confirmButtonText: "Aceptar",
+      });
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
     try {
-      await clienteAxios.post("/crear-usuario", formData);
-      alert("Usuario creado exitosamente");
-      onUserCreated(); // Actualiza la lista de usuarios
-      onClose(); // Cierra el modal
+      const response = await clienteAxios.post("/crear-usuario", formData);
+
+      Swal.fire({
+        title: "¡Éxito!",
+        text: response.data.message || "Usuario creado exitosamente.",
+        icon: "success",
+        confirmButtonText: "Aceptar",
+      });
+
+      onUserCreated();
+      onClose();
     } catch (error) {
       console.error("Error creando usuario:", error);
-      alert("Error al crear el usuario");
+
+      Swal.fire({
+        title: "Error",
+        text: error.response?.data?.message || "Error al crear el usuario.",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
     }
   };
 

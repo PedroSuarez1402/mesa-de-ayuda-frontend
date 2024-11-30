@@ -1,9 +1,10 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { useContext, useEffect, useState } from 'react'
 import clienteAxios from '../../config/axios'
 import { AuthContext } from '../../context/AuthContext';
 import { CButton, CForm, CFormLabel, CFormSelect, CFormTextarea, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle } from '@coreui/react';
-
+import Swal from 'sweetalert2';
 const FormRequests = ({ visible , onClose, onSuccess }) => {
     const [description, setDescription] = useState("");
     const [helpDeskId, setHelpDeskId] = useState("");
@@ -39,12 +40,23 @@ const FormRequests = ({ visible , onClose, onSuccess }) => {
                 help_desk_id: helpDeskId,
             });
             if ( response.data.status === 200){
-                alert("Solicitud creada exitosamente")
+                Swal.fire({
+                    title: 'Creada exitosamente',
+                    text: 'La solicitud ha sido creada exitosamente',
+                    icon: 'success',
+                    confirmButtonText: 'Aceptar',
+                })
                 onClose();
                 onSuccess();
 
             }
         } catch (error) {
+            Swal.fire({
+                title: 'Error',
+                text: 'Ocurrio un error al crear la solicitud',
+                icon: 'error',
+                confirmButtonText: 'Aceptar',
+            })
             setError("error al crear la solicitud");
             console.error("error al crear la solicitud", error)
         }
@@ -80,7 +92,7 @@ const FormRequests = ({ visible , onClose, onSuccess }) => {
         <CModalFooter>
             <CButton color='primary' onClick={handleSubmit}>Crear Solicitud</CButton>
             <CButton color='secondary' onClick={onClose}>Cerrar</CButton>
-            {error && <p className="error">{error}</p>}
+            
         </CModalFooter>
     </CModal>
   )
