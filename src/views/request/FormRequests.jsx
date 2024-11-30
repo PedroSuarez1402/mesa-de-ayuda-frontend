@@ -4,7 +4,7 @@ import clienteAxios from '../../config/axios'
 import { AuthContext } from '../../context/AuthContext';
 import { CButton, CForm, CFormLabel, CFormSelect, CFormTextarea, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle } from '@coreui/react';
 
-const FormRequests = ({ visible , onClose }) => {
+const FormRequests = ({ visible , onClose, onSuccess }) => {
     const [description, setDescription] = useState("");
     const [helpDeskId, setHelpDeskId] = useState("");
     const [error, setError] = useState(null);
@@ -41,6 +41,7 @@ const FormRequests = ({ visible , onClose }) => {
             if ( response.data.status === 200){
                 alert("Solicitud creada exitosamente")
                 onClose();
+                onSuccess();
 
             }
         } catch (error) {

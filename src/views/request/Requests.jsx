@@ -104,6 +104,7 @@ const Requests = () => {
             ) : (
               <CRow className="g-3">
                 {requests.map((request) => {
+                  const isCreating = request.status_request_id === 1;
                   const isAssigned = request.status_request_id === 2; // Checar estado
                   const isInProcess = request.status_request_id === 3;
                   const isInFinalize = request.status_request_id === 4;
@@ -143,7 +144,7 @@ const Requests = () => {
                           ) : (
                             <>
                               {/* Botón "Ver" para solicitudes asignadas o en proceso */}
-                              {(isAssigned || isInProcess) && (
+                              {(isAssigned || isInProcess || isCreating || isInFinalize) && (
                                 <CButton
                                   color="info"
                                   variant="outline"
@@ -160,7 +161,7 @@ const Requests = () => {
                                   <CButton
                                     color="primary"
                                     variant="outline"
-                                    className="w-100"
+                                    className="w-100 mt-2"
                                     onClick={() => handleAssign(request.id)}
                                   >
                                     Asignar
@@ -179,7 +180,7 @@ const Requests = () => {
         </CCard>
       </CCol>
       {isCreating && (
-        <FormRequests visible={isCreating} onClose={handleCloseModal} />
+        <FormRequests visible={isCreating} onClose={handleCloseModal} onSuccess={fetchRequest}/>
       )}
       {assigning && (
         <FormAssign
